@@ -26,22 +26,18 @@ def health():
 
 @app.route('/api/v1/upload', methods=['POST'])
 def upload():
-   file = request.files['file']
-   try:
-       container_client = blob_service_client.get_container_client(CONTAINER_NAME)
-       blob_client = container_client.get_blob_client(file.filename)
-       blob_client.upload_blob(file, overwrite=True)
-       return jsonify({
-       'ok': True,
-       'url': container_client.url + '/' + file.filename
-       }), 200
-   except Exception as e:
-       return jsonify({
-           'ok': False,
-           'error': str(e)  
-       }),500
-
-
+    file = request.files['file']
+    try:
+        client = get_blob_service_client()
+        container_client = client.get_container_client(CONTAINER_NAME)
+        blob_client = container_client.get_blob_client(file.filename)
+        blob_client.upload_blob(file, overwrite=True)
+        return jsonify({
+            'ok': True,
+            'url': f'{container_client.url}/{file.filename}'
+        }), 200
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
 
 
 @app.route('/api/v1/gallery', methods=['GET'])
