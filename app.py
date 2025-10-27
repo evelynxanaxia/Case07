@@ -8,13 +8,13 @@ from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 
 app = Flask(__name__)
-connection_string = os.environ.get('STORAGE_KEY')
-
-if not connection_string:
-    raise ValueError("STORAGE_KEY not found in environment variables")
-
-blob_service_client = BlobServiceClient.from_connection_string(connection_string)
 CONTAINER_NAME = "images-demo"
+
+def get_blob_service_client():
+    connection_string = os.environ.get('STORAGE_KEY')
+    if not connection_string:
+        raise ValueError("STORAGE_KEY not found in environment variables")
+    return BlobServiceClient.from_connection_string(connection_string)
 
 
 @app.route('/api/v1/health')
