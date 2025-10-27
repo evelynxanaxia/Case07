@@ -42,18 +42,19 @@ def upload():
 
 @app.route('/api/v1/gallery', methods=['GET'])
 def gallery():
-   try:
-       container_client = blob_service_client.get_container_client(CONTAINER_NAME)
-       blobs = container_client.list_blobs()
-       return jsonify({
-        "ok": True,
-        "gallery": [f'{container_client.url}/{blob.name}' for blob in blobs],
-   }), 200
-   except Exception as e:
-       return jsonify({
-           'error': str(e)
-       }),500
-
+    try:
+        client = get_blob_service_client()  # <-- initialize here
+        container_client = client.get_container_client(CONTAINER_NAME)
+        blobs = container_client.list_blobs()
+        return jsonify({
+            "ok": True,
+            "gallery": [f'{container_client.url}/{blob.name}' for blob in blobs],
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'ok': False,
+            'error': str(e)
+        }), 500
 
 @app.route('/')
 def index():
