@@ -4,11 +4,16 @@ import os
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 
-load_dotenv()  # reads .env into process env
+#load_dotenv()  # reads .env into process env
 
 
 app = Flask(__name__)
-blob_service_client = BlobServiceClient.from_connection_string(os.environ.get('AZURE_STORAGE_CONNECTION_STRING'))
+connection_string = os.environ.get('STORAGE_KEY')
+
+if not connection_string:
+    raise ValueError("STORAGE_KEY not found in environment variables")
+
+blob_service_client = BlobServiceClient.from_connection_string(connection_string)
 CONTAINER_NAME = "images-demo"
 
 
